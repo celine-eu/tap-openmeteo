@@ -1,0 +1,13 @@
+# Dumpster configuration
+dumps:
+  - name: sources
+    extensions:
+      - .py
+      - .md
+      - .json
+      - .toml
+    contents:
+      - tap_openmeteo
+      - tests
+      - README.md
+      - pyproject.toml

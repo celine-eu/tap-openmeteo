@@ -1,0 +1,90 @@
+{
+  "locations": [
+    {
+      "name": "Berlin",
+      "latitude": 52.52,
+      "longitude": 13.41,
+      "timezone": "Europe/Berlin"
+    },
+    {
+      "name": "New York",
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "timezone": "America/New_York"
+    }
+  ],
+  "forecast_days": 7,
+  "past_days": 0,
+  "hourly_variables": [
+    "temperature_2m",
+    "relative_humidity_2m",
+    "dew_point_2m",
+    "apparent_temperature",
+    "precipitation",
+    "precipitation_probability",
+    "rain",
+    "showers",
+    "snowfall",
+    "weather_code",
+    "cloud_cover",
+    "pressure_msl",
+    "surface_pressure",
+    "wind_speed_10m",
+    "wind_direction_10m",
+    "wind_gusts_10m",
+    "visibility",
+    "uv_index",
+    "is_day"
+  ],
+  "daily_variables": [
+    "weather_code",
+    "temperature_2m_max",
+    "temperature_2m_min",
+    "apparent_temperature_max",
+    "apparent_temperature_min",
+    "sunrise",
+    "sunset",
+    "daylight_duration",
+    "sunshine_duration",
+    "uv_index_max",
+    "precipitation_sum",
+    "rain_sum",
+    "showers_sum",
+    "snowfall_sum",
+    "precipitation_hours",
+    "precipitation_probability_max",
+    "wind_speed_10m_max",
+    "wind_gusts_10m_max",
+    "wind_direction_10m_dominant"
+  ],
+  "current_variables": [
+    "temperature_2m",
+    "relative_humidity_2m",
+    "apparent_temperature",
+    "is_day",
+    "precipitation",
+    "rain",
+    "showers",
+    "snowfall",
+    "weather_code",
+    "cloud_cover",
+    "pressure_msl",
+    "surface_pressure",
+    "wind_speed_10m",
+    "wind_direction_10m",
+    "wind_gusts_10m"
+  ],
+  "temperature_unit": "celsius",
+  "wind_speed_unit": "kmh",
+  "precipitation_unit": "mm",
+  "timeformat": "iso8601",
+  "timezone": "auto",
+  "cell_selection": "land",
+  "streams_to_sync": [
+    "weather_forecast",
+    "weather_hourly",
+    "weather_daily",
+    "weather_current"
+  ],
+  "request_timeout": 30
+}

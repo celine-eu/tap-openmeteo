@@ -1,0 +1,185 @@
+default_environment: dev
+project_id: tap-openmeteo-project
+
+environments:
+  - name: dev
+  - name: staging
+  - name: prod
+
+plugins:
+  extractors:
+    - name: tap-openmeteo
+      namespace: tap_openmeteo
+      pip_url: -e .
+      executable: tap-openmeteo
+      capabilities:
+        - state
+        - catalog
+        - discover
+        - about
+        - stream-maps
+      settings:
+        - name: api_key
+          kind: password
+          label: API Key
+          description: Optional API key for commercial use
+        - name: api_url
+          kind: string
+          value: https://api.open-meteo.com
+          label: API URL
+          description: Base URL for the Open-Meteo API
+        - name: locations
+          kind: array
+          label: Locations
+          description: List of locations to fetch weather data for
+        - name: forecast_days
+          kind: integer
+          value: 7
+          label: Forecast Days
+          description: Number of forecast days (0-16)
+        - name: past_days
+          kind: integer
+          value: 0
+          label: Past Days
+          description: Include past days in forecast (0-92)
+        - name: start_date
+          kind: date_iso8601
+          label: Start Date
+          description: Start date for historical data
+        - name: end_date
+          kind: date_iso8601
+          label: End Date
+          description: End date for historical data
+        - name: hourly_variables
+          kind: array
+          label: Hourly Variables
+          description: List of hourly weather variables to fetch
+        - name: daily_variables
+          kind: array
+          label: Daily Variables
+          description: List of daily weather variables to fetch
+        - name: current_variables
+          kind: array
+          label: Current Variables
+          description: List of current weather variables to include
+        - name: minutely_15_variables
+          kind: array
+          label: 15-Minutely Variables
+          description: List of 15-minutely weather variables
+        - name: temperature_unit
+          kind: options
+          value: celsius
+          label: Temperature Unit
+          description: Temperature unit
+          options:
+            - label: Celsius
+              value: celsius
+            - label: Fahrenheit
+              value: fahrenheit
+        - name: wind_speed_unit
+          kind: options
+          value: kmh
+          label: Wind Speed Unit
+          description: Wind speed unit
+          options:
+            - label: km/h
+              value: kmh
+            - label: m/s
+              value: ms
+            - label: mph
+              value: mph
+            - label: knots
+              value: kn
+        - name: precipitation_unit
+          kind: options
+          value: mm
+          label: Precipitation Unit
+          description: Precipitation unit
+          options:
+            - label: Millimeters
+              value: mm
+            - label: Inches
+              value: inch
+        - name: timezone
+          kind: string
+          value: auto
+          label: Default Timezone
+          description: Default timezone for all locations
+        - name: models
+          kind: array
+          label: Weather Models
+          description: Specific weather models to use
+        - name: cell_selection
+          kind: options
+          value: land
+          label: Grid Cell Selection
+          description: How to select grid cells
+          options:
+            - label: Land
+              value: land
+            - label: Sea
+              value: sea
+            - label: Nearest
+              value: nearest
+        - name: streams_to_sync
+          kind: array
+          label: Streams to Sync
+          description: Which streams to sync
+        - name: tilt
+          kind: integer
+          label: Panel Tilt
+          description: Panel tilt angle for solar radiation (0-90)
+        - name: azimuth
+          kind: integer
+          label: Panel Azimuth
+          description: Panel azimuth for solar radiation
+        - name: user_agent
+          kind: string
+          label: User Agent
+          description: Custom User-Agent header for API requests
+        - name: request_timeout
+          kind: integer
+          value: 30
+          label: Request Timeout
+          description: HTTP request timeout in seconds
+      config:
+        locations:
+          - name: Berlin
+            latitude: 52.52
+            longitude: 13.41
+        forecast_days: 7
+        hourly_variables:
+          - temperature_2m
+          - relative_humidity_2m
+          - precipitation
+          - weather_code
+          - wind_speed_10m
+          - wind_direction_10m
+        daily_variables:
+          - weather_code
+          - temperature_2m_max
+          - temperature_2m_min
+          - precipitation_sum
+          - sunrise
+          - sunset
+        streams_to_sync:
+          - weather_forecast
+          - weather_hourly
+          - weather_daily
+      select:
+        - "*.*"
+
+  loaders:
+    - name: target-jsonl
+      variant: andyh1203
+      pip_url: target-jsonl
+
+jobs:
+  - name: weather-elt
+    tasks:
+      - tap-openmeteo target-jsonl
+
+schedules:
+  - name: weather-daily
+    interval: "@daily"
+    job: weather-elt
