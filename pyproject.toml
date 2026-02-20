@@ -78,10 +78,48 @@ ignore = [
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
+[tool.tox]
+min_version = "4.22"
+requires = [
+    "tox>=4.22",
+    "tox-uv",
+]
+env_list = [
+    "typing",
+    "py313",
+    "py312",
+    "py311",
+    "py310",
+]
+
+[tool.tox.env_run_base]
+runner = "uv-venv-lock-runner"
+pass_env = [
+    "TAP_OPENMETEO_*",
+]
+dependency_groups = ["test", "typing", "dev"]
+commands = [["pytest", { replace = "posargs", default = ["tests"], extend = true }]]
+
+[tool.tox.env.typing]
+dependency_groups = ["test", "typing", "dev"]
+commands = [
+    ["mypy", { replace = "posargs", default = ["tap_openmeteo", "tests"], extend = true }],
+]
+
 [dependency-groups]
+typing = [
+    "mypy>=1.0",
+    "types-requests",
+]
+test = [
+    "pytest>=8.0",
+    "pytest-cov>=4.0",
+    "singer-sdk[testing]",
+]
 dev = [
     "meltano>=4.1.2",
     "python-semantic-release>=9.21.1",
+    "ruff>=0.1.0",
 ]
 
 

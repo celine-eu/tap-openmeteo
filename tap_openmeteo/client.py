@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, Any, cast
 from urllib.parse import urlencode
 
 from singer_sdk.streams import RESTStream
@@ -32,7 +32,7 @@ class OpenMeteoStream(RESTStream):
     records_jsonpath = "$"  # Open-Meteo returns data at root level
 
     # Disable pagination - Open-Meteo doesn't use pagination
-    next_page_token_jsonpath: ClassVar[str | None] = None
+    next_page_token_jsonpath: str | None = None
 
     # Replication configuration - can be overridden in subclasses
     replication_key: str | None = None
@@ -49,7 +49,7 @@ class OpenMeteoStream(RESTStream):
         Returns:
             The base URL for API requests.
         """
-        base_url = self.config.get("api_url", "https://api.open-meteo.com")
+        base_url = cast(str, self.config.get("api_url", "https://api.open-meteo.com"))
         # Ensure no trailing slash
         return base_url.rstrip("/")
 
@@ -81,7 +81,7 @@ class OpenMeteoStream(RESTStream):
         Returns:
             Timeout value in seconds.
         """
-        return self.config.get("request_timeout", 30)
+        return cast(int, self.config.get("request_timeout", 30))
 
     def get_url_params(
         self,
