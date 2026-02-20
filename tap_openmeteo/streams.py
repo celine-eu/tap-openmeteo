@@ -142,9 +142,9 @@ class WeatherForecastStream(OpenMeteoStream):
 
         record = {
             "location_name": location_name,
-            "latitude": data.get("latitude"),
-            "longitude": data.get("longitude"),
-            "elevation": data.get("elevation"),
+            "latitude": float(data["latitude"]) if data.get("latitude") is not None else None,
+            "longitude": float(data["longitude"]) if data.get("longitude") is not None else None,
+            "elevation": float(data["elevation"]) if data.get("elevation") is not None else None,
             "timezone": data.get("timezone"),
             "timezone_abbreviation": data.get("timezone_abbreviation"),
             "utc_offset_seconds": data.get("utc_offset_seconds"),
@@ -288,8 +288,8 @@ class WeatherHourlyStream(OpenMeteoStream):
         if hasattr(self, "_current_context") and self._current_context:
             location_name = self._current_context.get("location_name", "unknown")
 
-        latitude = data.get("latitude")
-        longitude = data.get("longitude")
+        latitude = float(data["latitude"]) if data.get("latitude") is not None else None
+        longitude = float(data["longitude"]) if data.get("longitude") is not None else None
 
         # Get hourly data
         hourly = data.get("hourly", {})
@@ -461,8 +461,8 @@ class WeatherDailyStream(OpenMeteoStream):
         if hasattr(self, "_current_context") and self._current_context:
             location_name = self._current_context.get("location_name", "unknown")
 
-        latitude = data.get("latitude")
-        longitude = data.get("longitude")
+        latitude = float(data["latitude"]) if data.get("latitude") is not None else None
+        longitude = float(data["longitude"]) if data.get("longitude") is not None else None
 
         # Get daily data
         daily = data.get("daily", {})
@@ -615,8 +615,8 @@ class WeatherCurrentStream(OpenMeteoStream):
 
         record = {
             "location_name": location_name,
-            "latitude": data.get("latitude"),
-            "longitude": data.get("longitude"),
+            "latitude": float(data["latitude"]) if data.get("latitude") is not None else None,
+            "longitude": float(data["longitude"]) if data.get("longitude") is not None else None,
             "time": current.get("time"),
             "interval": current.get("interval"),
         }
@@ -747,8 +747,8 @@ class WeatherMinutely15Stream(OpenMeteoStream):
         if hasattr(self, "_current_context") and self._current_context:
             location_name = self._current_context.get("location_name", "unknown")
 
-        latitude = data.get("latitude")
-        longitude = data.get("longitude")
+        latitude = float(data["latitude"]) if data.get("latitude") is not None else None
+        longitude = float(data["longitude"]) if data.get("longitude") is not None else None
 
         # Get minutely_15 data
         minutely = data.get("minutely_15", {})
@@ -902,8 +902,8 @@ class WeatherHistoricalStream(OpenMeteoStream):
         if hasattr(self, "_current_context") and self._current_context:
             location_name = self._current_context.get("location_name", "unknown")
 
-        latitude = data.get("latitude")
-        longitude = data.get("longitude")
+        latitude = float(data["latitude"]) if data.get("latitude") is not None else None
+        longitude = float(data["longitude"]) if data.get("longitude") is not None else None
 
         hourly = data.get("hourly", {})
         times = hourly.get("time", [])
