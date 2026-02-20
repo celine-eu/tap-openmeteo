@@ -117,10 +117,10 @@ class OpenMeteoStream(RESTStream):
             # Fallback to first location if no context
             locations = self.config.get("locations", [])
             if locations:
-                params["latitude"] = locations[0]["latitude"]
-                params["longitude"] = locations[0]["longitude"]
+                params["latitude"] = float(locations[0]["latitude"])
+                params["longitude"] = float(locations[0]["longitude"])
                 if locations[0].get("elevation") is not None:
-                    params["elevation"] = locations[0]["elevation"]
+                    params["elevation"] = float(locations[0]["elevation"])
                 params["timezone"] = locations[0].get(
                     "timezone", self.config.get("timezone", "auto")
                 )
@@ -204,11 +204,11 @@ class OpenMeteoStream(RESTStream):
         for location in locations:
             ctx = {
                 "location_name": location["name"],
-                "latitude": location["latitude"],
-                "longitude": location["longitude"],
+                "latitude": float(location["latitude"]),
+                "longitude": float(location["longitude"]),
             }
             if location.get("elevation") is not None:
-                ctx["elevation"] = location["elevation"]
+                ctx["elevation"] = float(location["elevation"])
             if location.get("timezone"):
                 ctx["timezone"] = location["timezone"]
 
