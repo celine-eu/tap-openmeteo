@@ -116,14 +116,34 @@ class TapOpenMeteo(Tap):
             th.IntegerType,
             default=7,
             title="Forecast Days",
-            description="Number of forecast days (0-16). Default is 7 days.",
+            description="Number of forecast days (0-16). Default is 7 days. Ignored if forecast_hours is set.",
+        ),
+        th.Property(
+            "forecast_hours",
+            th.IntegerType,
+            required=False,
+            title="Forecast Hours",
+            description=(
+                "Number of forecast hours. When set, takes priority over "
+                "forecast_days for hourly/minutely streams."
+            ),
         ),
         th.Property(
             "past_days",
             th.IntegerType,
             default=0,
             title="Past Days",
-            description="Include past days in forecast (0-92). Default is 0.",
+            description="Include past days in forecast (0-92). Default is 0. Ignored if past_hours is set.",
+        ),
+        th.Property(
+            "past_hours",
+            th.IntegerType,
+            required=False,
+            title="Past Hours",
+            description=(
+                "Number of past hours to include. When set, takes priority "
+                "over past_days for hourly/minutely streams."
+            ),
         ),
         th.Property(
             "start_date",

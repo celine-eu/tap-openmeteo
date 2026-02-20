@@ -152,3 +152,55 @@ class TestTapOpenMeteoCustom:
         # Default timezone should be overridden by location-specific timezone
         assert tap.config.get("timezone") == "UTC"
         assert tap.config["locations"][0].get("timezone") == "Europe/Berlin"
+
+    def test_forecast_hours_config(self) -> None:
+        """Test that forecast_hours/past_hours are accepted and override days."""
+        config = {
+            "locations": [{"name": "Berlin", "latitude": 52.52, "longitude": 13.41}],
+            "forecast_hours": 48,
+            "past_hours": 120,
+            "hourly_variables": ["temperature_2m"],
+            "streams_to_sync": ["weather_hourly"],
+        }
+        tap = TapOpenMeteo(config=config)
+        assert tap.config.get("forecast_hours") == 48
+        assert tap.config.get("past_hours") == 120
+
+        streams = tap.discover_streams()
+        assert len(streams) == 1
+        hourly_stream = streams[0]
+
+        params = hourly_stream.get_url_params(
+            context={"location_name": "Berlin", "latitude": 52.52, "longitude": 13.41},
+            next_page_token=None,
+        )
+        assert "forecast_hours" in params
+        assert params["forecast_hours"] == 48
+        assert "forecast_days" not in params
+        assert "past_hours" in params
+        assert params["past_hours"] == 120
+        assert "past_days" not in params
+
+    def test_forecast_days_fallback(self) -> None:
+        """Test that forecast_days is used when forecast_hours is not set."""
+        config = {
+            "locations": [{"name": "Berlin", "latitude": 52.52, "longitude": 13.41}],
+            "forecast_days": 3,
+            "past_days": 5,
+            "hourly_variables": ["temperature_2m"],
+            "streams_to_sync": ["weather_hourly"],
+        }
+        tap = TapOpenMeteo(config=config)
+        streams = tap.discover_streams()
+        hourly_stream = streams[0]
+
+        params = hourly_stream.get_url_params(
+            context={"location_name": "Berlin", "latitude": 52.52, "longitude": 13.41},
+            next_page_token=None,
+        )
+        assert "forecast_days" in params
+        assert params["forecast_days"] == 3
+        assert "forecast_hours" not in params
+        assert "past_days" in params
+        assert params["past_days"] == 5
+        assert "past_hours" not in params

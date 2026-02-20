@@ -103,9 +103,18 @@ class WeatherForecastStream(OpenMeteoStream):
         """
         params = super().get_url_params(context, next_page_token)
 
-        # Time range
-        params["forecast_days"] = self.config.get("forecast_days", 7)
-        params["past_days"] = self.config.get("past_days", 0)
+        # Time range — prefer hours over days when configured
+        forecast_hours = self.config.get("forecast_hours")
+        if forecast_hours is not None:
+            params["forecast_hours"] = forecast_hours
+        else:
+            params["forecast_days"] = self.config.get("forecast_days", 7)
+
+        past_hours = self.config.get("past_hours")
+        if past_hours is not None:
+            params["past_hours"] = past_hours
+        else:
+            params["past_days"] = self.config.get("past_days", 0)
 
         # Request at least one variable to get metadata
         hourly_vars = self.config.get("hourly_variables", ["temperature_2m"])
@@ -227,9 +236,18 @@ class WeatherHourlyStream(OpenMeteoStream):
         """
         params = super().get_url_params(context, next_page_token)
 
-        # Time range
-        params["forecast_days"] = self.config.get("forecast_days", 7)
-        params["past_days"] = self.config.get("past_days", 0)
+        # Time range — prefer hours over days when configured
+        forecast_hours = self.config.get("forecast_hours")
+        if forecast_hours is not None:
+            params["forecast_hours"] = forecast_hours
+        else:
+            params["forecast_days"] = self.config.get("forecast_days", 7)
+
+        past_hours = self.config.get("past_hours")
+        if past_hours is not None:
+            params["past_hours"] = past_hours
+        else:
+            params["past_days"] = self.config.get("past_days", 0)
 
         # Hourly variables
         hourly_vars = self.config.get(
@@ -393,9 +411,18 @@ class WeatherDailyStream(OpenMeteoStream):
         """
         params = super().get_url_params(context, next_page_token)
 
-        # Time range
-        params["forecast_days"] = self.config.get("forecast_days", 7)
-        params["past_days"] = self.config.get("past_days", 0)
+        # Time range — prefer hours over days when configured
+        forecast_hours = self.config.get("forecast_hours")
+        if forecast_hours is not None:
+            params["forecast_hours"] = forecast_hours
+        else:
+            params["forecast_days"] = self.config.get("forecast_days", 7)
+
+        past_hours = self.config.get("past_hours")
+        if past_hours is not None:
+            params["past_hours"] = past_hours
+        else:
+            params["past_days"] = self.config.get("past_days", 0)
 
         # Daily variables
         daily_vars = self.config.get(
@@ -686,8 +713,12 @@ class WeatherMinutely15Stream(OpenMeteoStream):
         """
         params = super().get_url_params(context, next_page_token)
 
-        # Time range
-        params["forecast_days"] = self.config.get("forecast_days", 7)
+        # Time range — prefer hours over days when configured
+        forecast_hours = self.config.get("forecast_hours")
+        if forecast_hours is not None:
+            params["forecast_hours"] = forecast_hours
+        else:
+            params["forecast_days"] = self.config.get("forecast_days", 7)
 
         # 15-minutely variables
         minutely_vars = self.config.get(
