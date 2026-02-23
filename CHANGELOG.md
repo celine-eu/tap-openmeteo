@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.2.0 (2026-02-23)
+
+### Features
+
+- Bug fix
+  ([`b76f2b7`](https://github.com/celine-eu/tap-openmeteo/commit/b76f2b71ea29927092e7c4be01fcf357bcc23403))
+
+
 ## v0.1.0 (2026-02-23)
 
 ### Features
