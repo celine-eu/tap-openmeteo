@@ -259,13 +259,22 @@ class WeatherHourlyStream(OpenMeteoStream):
         # Check for incremental state
         state = self.get_context_state(context)
         if state and state.get("replication_key_value"):
-            # Use start_date to fetch from last synced time
             last_sync = state["replication_key_value"]
             if isinstance(last_sync, str):
-                # Parse and use as start_hour
                 try:
                     dt = datetime.fromisoformat(last_sync.replace("Z", "+00:00"))
                     params["start_hour"] = dt.strftime("%Y-%m-%dT%H:%M")
+                    # end_hour is required when start_hour is set
+                    forecast_hours = self.config.get("forecast_hours", 48)
+                    end_dt = datetime.now(timezone.utc) + timedelta(
+                        hours=int(forecast_hours),
+                    )
+                    params["end_hour"] = end_dt.strftime("%Y-%m-%dT%H:%M")
+                    # Remove mutually exclusive params
+                    params.pop("forecast_hours", None)
+                    params.pop("past_hours", None)
+                    params.pop("forecast_days", None)
+                    params.pop("past_days", None)
                 except ValueError:
                     pass
 
@@ -437,9 +446,19 @@ class WeatherDailyStream(OpenMeteoStream):
             last_sync = state["replication_key_value"]
             if isinstance(last_sync, str):
                 try:
-                    # Use the date as start_date
                     dt = datetime.fromisoformat(last_sync.replace("Z", "+00:00"))
                     params["start_date"] = dt.strftime("%Y-%m-%d")
+                    # end_date is required when start_date is set
+                    forecast_days = self.config.get("forecast_days", 7)
+                    end_dt = datetime.now(timezone.utc) + timedelta(
+                        days=int(forecast_days),
+                    )
+                    params["end_date"] = end_dt.strftime("%Y-%m-%d")
+                    # Remove mutually exclusive params
+                    params.pop("forecast_hours", None)
+                    params.pop("past_hours", None)
+                    params.pop("forecast_days", None)
+                    params.pop("past_days", None)
                 except ValueError:
                     pass
 
