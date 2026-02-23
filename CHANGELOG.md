@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.2.1 (2026-02-23)
+
+### Bug Fixes
+
+- Correct pgk name handling
+  ([`699c014`](https://github.com/celine-eu/tap-openmeteo/commit/699c014de7273058da48d6fbb7c47ed5e0f495a4))
+
+
 ## v0.2.0 (2026-02-23)
 
 ### Features
