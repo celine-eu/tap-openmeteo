@@ -3,7 +3,7 @@ name = "tap-openmeteo"
 version = "1.0.0"
 description = "Singer tap for OpenMeteo weather API, built with the Meltano Singer SDK."
 readme = "README.md"
-authors = [{ name = "Luca Capra, email = "luca.capra@spindox.it" }]
+authors = [{ name = "Luca Capra", email = "luca.capra@spindox.it" }]
 keywords = [
     "ELT",
     "OpenMeteo",
