@@ -127,7 +127,7 @@ dev = [
 version_toml = ["pyproject.toml:project.version"]
 
 build_command = """
-    uv lock --upgrade-package "$PACKAGE_NAME"
+    uv lock --upgrade-package "tap-openmeteo"
     git add uv.lock
     uv build
 """
