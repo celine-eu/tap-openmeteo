@@ -274,7 +274,7 @@ plugins:
   extractors:
     - name: tap-openmeteo
       namespace: tap_openmeteo
-      pip_url: git+https://github.com/YOUR_ORG/tap-openmeteo.git
+      pip_url: git+https://github.com/celine-eu/tap-openmeteo.git
       config:
         locations:
           - name: Berlin
