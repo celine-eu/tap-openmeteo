@@ -183,7 +183,7 @@ class WeatherHourlyStream(OpenMeteoStream):
     path = "/v1/forecast"
     primary_keys: ClassVar[list[str]] = ["location_name", "time"]
     replication_key = "time"
-    is_sorted = True
+    is_sorted = False
 
     # Dynamic schema built from configuration
     @property
@@ -353,7 +353,7 @@ class WeatherDailyStream(OpenMeteoStream):
     path = "/v1/forecast"
     primary_keys: ClassVar[list[str]] = ["location_name", "date"]
     replication_key = "date"
-    is_sorted = True
+    is_sorted = False
 
     @property
     def schema(self) -> dict:
@@ -652,7 +652,7 @@ class WeatherMinutely15Stream(OpenMeteoStream):
     path = "/v1/forecast"
     primary_keys: ClassVar[list[str]] = ["location_name", "time"]
     replication_key = "time"
-    is_sorted = True
+    is_sorted = False
 
     @property
     def schema(self) -> dict:
@@ -789,7 +789,7 @@ class WeatherHistoricalStream(OpenMeteoStream):
     path = "/v1/archive"
     primary_keys: ClassVar[list[str]] = ["location_name", "time"]
     replication_key = "time"
-    is_sorted = True
+    is_sorted = False
 
     @property
     def schema(self) -> dict:
