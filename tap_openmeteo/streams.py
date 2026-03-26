@@ -256,27 +256,10 @@ class WeatherHourlyStream(OpenMeteoStream):
         )
         params["hourly"] = ",".join(hourly_vars)
 
-        # Check for incremental state
-        state = self.get_context_state(context)
-        if state and state.get("replication_key_value"):
-            last_sync = state["replication_key_value"]
-            if isinstance(last_sync, str):
-                try:
-                    dt = datetime.fromisoformat(last_sync.replace("Z", "+00:00"))
-                    params["start_hour"] = dt.strftime("%Y-%m-%dT%H:%M")
-                    # end_hour is required when start_hour is set
-                    forecast_hours = self.config.get("forecast_hours", 48)
-                    end_dt = datetime.now(timezone.utc) + timedelta(
-                        hours=int(forecast_hours),
-                    )
-                    params["end_hour"] = end_dt.strftime("%Y-%m-%dT%H:%M")
-                    # Remove mutually exclusive params
-                    params.pop("forecast_hours", None)
-                    params.pop("past_hours", None)
-                    params.pop("forecast_days", None)
-                    params.pop("past_days", None)
-                except ValueError:
-                    pass
+        # Always use rolling window (past_hours + forecast_hours) so that
+        # forecast NULLs at the edge are overwritten with actuals on the
+        # next run.  The target upserts on primary key, so duplicates are
+        # harmless; the Singer SDK still advances the bookmark.
 
         return params
 
@@ -440,27 +423,10 @@ class WeatherDailyStream(OpenMeteoStream):
         )
         params["daily"] = ",".join(daily_vars)
 
-        # Check for incremental state
-        state = self.get_context_state(context)
-        if state and state.get("replication_key_value"):
-            last_sync = state["replication_key_value"]
-            if isinstance(last_sync, str):
-                try:
-                    dt = datetime.fromisoformat(last_sync.replace("Z", "+00:00"))
-                    params["start_date"] = dt.strftime("%Y-%m-%d")
-                    # end_date is required when start_date is set
-                    forecast_days = self.config.get("forecast_days", 7)
-                    end_dt = datetime.now(timezone.utc) + timedelta(
-                        days=int(forecast_days),
-                    )
-                    params["end_date"] = end_dt.strftime("%Y-%m-%d")
-                    # Remove mutually exclusive params
-                    params.pop("forecast_hours", None)
-                    params.pop("past_hours", None)
-                    params.pop("forecast_days", None)
-                    params.pop("past_days", None)
-                except ValueError:
-                    pass
+        # Always use rolling window (past_days + forecast_days) so that
+        # forecast NULLs at the edge are overwritten with actuals on the
+        # next run.  The target upserts on primary key, so duplicates are
+        # harmless; the Singer SDK still advances the bookmark.
 
         return params
 
@@ -874,16 +840,8 @@ class WeatherHistoricalStream(OpenMeteoStream):
         start_date = self.config.get("start_date")
         end_date = self.config.get("end_date")
 
-        # Check for incremental state
-        state = self.get_context_state(context)
-        if state and state.get("replication_key_value"):
-            last_sync = state["replication_key_value"]
-            if isinstance(last_sync, str):
-                try:
-                    dt = datetime.fromisoformat(last_sync.replace("Z", "+00:00"))
-                    start_date = dt.strftime("%Y-%m-%d")
-                except ValueError:
-                    pass
+        # Always re-fetch the full configured range so that any NULLs
+        # from prior runs are overwritten with actuals.
 
         # Default to last 30 days if no start date
         if not start_date:
