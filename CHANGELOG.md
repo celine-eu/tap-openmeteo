@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.2.2 (2026-03-26)
+
+### Bug Fixes
+
+- Always use rolling window, remove state-based start_hour/end_hour override
+  ([`e1344ba`](https://github.com/celine-eu/tap-openmeteo/commit/e1344ba))
+
+- Set is_sorted=False to allow rolling window re-fetch past bookmark
+
+
 ## v0.2.1 (2026-02-23)
 
 ### Bug Fixes
